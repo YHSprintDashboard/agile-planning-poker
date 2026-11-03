@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 
 st.set_page_config(
@@ -79,12 +80,56 @@ if not st.session_state.authenticated:
 st.success(
     f"Logged in as {st.session_state.display_name}"
 )
+ROOMS_FILE = "data/rooms.json"
 
 if st.session_state.is_admin:
 
-    st.subheader("👑 Admin")
+    st.subheader("👑 Admin Dashboard")
 
-    st.button("Create Room")
+    room_name = st.text_input(
+        "Room Name"
+    )
+
+    if st.button("Create Room"):
+
+    room_code = (
+        room_name.upper()
+        .replace(" ", "")
+    )
+
+    try:
+
+        with open(
+            ROOMS_FILE,
+            "r"
+        ) as f:
+
+            rooms = json.load(f)
+
+    except:
+
+        rooms = {}
+
+    rooms[room_code] = {
+        "name": room_name,
+        "status": "Open",
+        "users": []
+    }
+
+    with open(
+        ROOMS_FILE,
+        "w"
+    ) as f:
+
+        json.dump(
+            rooms,
+            f,
+            indent=4
+        )
+
+    st.success(
+        f"Room Created: {room_code}"
+    )
 
 else:
 
@@ -95,4 +140,44 @@ else:
     )
 
     st.button("Join Room")
+
+st.markdown("### Active Rooms")
+
+try:
+
+    with open(
+        ROOMS_FILE,
+        "r"
+    ) as f:
+
+        rooms = json.load(f)
+
+except:
+
+    rooms = {}
+
+if rooms:
+
+    room_rows = []
+
+    for code, room in rooms.items():
+
+        room_rows.append(
+            {
+                "Room Code": code,
+                "Room Name": room["name"],
+                "Status": room["status"]
+            }
+        )
+
+    st.dataframe(
+        pd.DataFrame(room_rows),
+        use_container_width=True
+    )
+
+else:
+
+    st.info(
+        "No rooms created"
+    )
 
