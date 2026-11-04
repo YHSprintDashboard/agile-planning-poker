@@ -430,15 +430,8 @@ if st.session_state.is_admin:
                 
                 st.dataframe(
                     revealed_df,
-                    column_config={
-                        "Participant": st.column_config.TextColumn(
-                            width="small"
-                        ),
-                        "Vote": st.column_config.TextColumn(
-                            width="small"
-                        )
-                    },
-                    hide_index=True
+                    hide_index=True,
+                    use_container_width=False
                 )
 
             numeric_votes = []
