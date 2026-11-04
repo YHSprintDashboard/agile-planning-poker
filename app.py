@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="Agile Planning Poker",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Hide Streamlit default UI where possible
@@ -113,7 +113,11 @@ if "selected_vote" not in st.session_state:
 # LOGIN SCREEN
 # =========================
 
-st.title("🎯 Agile Planning Poker")
+st.title("🎯 YH Planning Poker")
+
+st.caption(
+    "⚡ A long time ago in a sprint far, far away...... The Legend 👑 forged this Planning Poker app to bring balance to Story Points."
+)
 
 if not st.session_state.authenticated:
 
@@ -270,35 +274,46 @@ if st.session_state.is_admin:
 
         st.divider()
 
-        with st.sidebar:
+        st.header("👑 Admin Controls")
 
-            st.header("👑 Admin Controls")
+        col1, col2, col3, col4, col5 = st.columns(5)
         
+        with col1:
             selected_room = st.selectbox(
                 "Active Room",
                 list(rooms.keys())
             )
         
+        with col2:
+            st.write("")
             reveal_votes = st.button(
                 "🎭 Reveal Votes",
                 use_container_width=True
             )
-            
+        
+        with col3:
+            st.write("")
             undo_reveal = st.button(
                 "↩️ Undo Reveal",
                 use_container_width=True
             )
-            
+        
+        with col4:
+            st.write("")
             new_story = st.button(
                 "🆕 New User Story",
                 use_container_width=True
             )
-            
-            if st.button(
-                "🔄 Refresh Status",
+        
+        with col5:
+            st.write("")
+            refresh_status = st.button(
+                "🔄 Refresh",
                 use_container_width=True
-            ):
-                st.rerun()
+            )
+        
+        if refresh_status:
+            st.rerun()
 
         room = rooms[selected_room]
 
@@ -495,7 +510,7 @@ else:
         with col1:
             room_code = st.text_input(
                 "Room Code",
-                placeholder="SPRINT15PLANNING"
+                placeholder="SPRINT PLANNING"
             )
     
         with col2:
