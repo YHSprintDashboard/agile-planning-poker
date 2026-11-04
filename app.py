@@ -173,7 +173,7 @@ if st.session_state.is_admin:
 
     st.subheader("👑 Admin Dashboard")
 
-    col1, col2 = st.columns([4,1])
+    col1, col2, col3 = st.columns([2,1,4])
 
     with col1:
         room_name = st.text_input(
@@ -262,62 +262,34 @@ if st.session_state.is_admin:
         
         if users:
         
-            card_html = ""
+            cols = st.columns(8)
         
-            for user in users:
+            for idx, user in enumerate(users):
         
-                voted = user in room["votes"]
+                with cols[idx % 8]:
         
-                if room["revealed"] and voted:
+                    voted = user in room["votes"]
         
-                    display_value = room["votes"][user]
+                    if room["revealed"] and voted:
         
-                elif voted:
+                        st.metric(
+                            label=user,
+                            value=room["votes"][user]
+                        )
         
-                    display_value = "✅"
+                    elif voted:
         
-                else:
+                        st.metric(
+                            label=user,
+                            value="✅"
+                        )
         
-                    display_value = "⏳"
+                    else:
         
-                card_html += f"""
-                <div style="
-                    width:80px;
-                    margin:10px;
-                    display:inline-block;
-                    text-align:center;
-                    vertical-align:top;
-                ">
-                
-                    <div style="
-                        width:80px;
-                        height:110px;
-                        border:2px dashed #cccccc;
-                        border-radius:10px;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        font-size:22px;
-                        font-weight:bold;
-                        background-color:white;
-                    ">
-                        {display_value}
-                    </div>
-                
-                    <div style="
-                        margin-top:8px;
-                        font-size:14px;
-                    ">
-                        {user}
-                    </div>
-                
-                </div>
-                """
-        
-            st.markdown(
-                card_html,
-                unsafe_allow_html=True
-            )
+                        st.metric(
+                            label=user,
+                            value="⏳"
+                        )
         
 
         st.divider()
@@ -431,7 +403,7 @@ else:
                 f"🏠 {st.session_state.room_code}"
             )
 
-    col1, col2 = st.columns([4,1])
+    col1, col2, col3 = st.columns([2,1,4])
 
     with col1:
         room_code = st.text_input(
