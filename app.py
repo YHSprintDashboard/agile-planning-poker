@@ -258,6 +258,7 @@ if st.session_state.is_admin:
                     "name": room_name,
                     "status": "Open",
                     "current_story": "",
+                    "history": [],
                     "users": [],
                     "votes": {},
                     "revealed": False
@@ -457,7 +458,7 @@ if st.session_state.is_admin:
                     )[len(numeric_votes)//2]
                 )
 
-                col1, col2, col3 = st.columns([1,1,1])
+                col1, col2, col3, col4, col5 = st.columns(5)
 
                 with col1:
                     st.metric(
@@ -475,7 +476,24 @@ if st.session_state.is_admin:
                     final_sp = st.number_input(
                         "Final SP",
                         value=float(round(average_sp)),
-                        step=1.0
+                        step=1.0,
+                        key="final_sp"
+                    )
+                
+                with col4:
+                    final_dev_days = st.number_input(
+                        "Dev Days",
+                        value=1.0,
+                        step=0.5,
+                        key="final_dev_days"
+                    )
+                
+                with col5:
+                    final_qa_days = st.number_input(
+                        "QA Days",
+                        value=1.0,
+                        step=0.5,
+                        key="final_qa_days"
                     )
 
                 st.success(
