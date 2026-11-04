@@ -143,6 +143,7 @@ with col2:
         st.rerun()
 
 rooms = load_rooms()
+st.write("DEBUG Rooms:", rooms)
 
 # =========================
 # ADMIN
@@ -252,6 +253,7 @@ st.divider()
 st.markdown("### 📋 Active Rooms")
 
 rooms = load_rooms()
+
 
 if rooms:
 
