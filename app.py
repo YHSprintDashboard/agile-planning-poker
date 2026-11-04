@@ -450,27 +450,55 @@ if st.session_state.is_admin:
                     use_container_width=False
                 )
 
-            numeric_votes = []
-
+            
+            sp_votes = []
+            dev_votes = []
+            qa_votes = []
+            
             for vote in room["sp_votes"].values():
-
-                if str(vote).isdigit():
-
-                    numeric_votes.append(
-                        int(vote)
-                    )
-
-            if numeric_votes:
-
+            
+                try:
+                    sp_votes.append(float(vote))
+                except:
+                    pass
+            
+            for vote in room["dev_votes"].values():
+            
+                try:
+                    dev_votes.append(float(vote))
+                except:
+                    pass
+            
+            for vote in room["qa_votes"].values():
+            
+                try:
+                    qa_votes.append(float(vote))
+                except:
+                    pass
+            
+            if sp_votes:
+            
                 average_sp = (
-                    sum(numeric_votes)
-                    / len(numeric_votes)
+                    sum(sp_votes)
+                    / len(sp_votes)
                 )
-
+            
                 median_sp = (
                     sorted(
-                        numeric_votes
-                    )[len(numeric_votes)//2]
+                        sp_votes
+                    )[len(sp_votes)//2]
+                )
+            
+                average_dev = (
+                    sum(dev_votes)
+                    / len(dev_votes)
+                    if dev_votes else 0
+                )
+            
+                average_qa = (
+                    sum(qa_votes)
+                    / len(qa_votes)
+                    if qa_votes else 0
                 )
 
                 col1, col2, col3, col4, col5 = st.columns(5)
@@ -498,7 +526,7 @@ if st.session_state.is_admin:
                 with col4:
                     final_dev_days = st.number_input(
                         "Dev Days",
-                        value=1.0,
+                        value=float(round(average_dev, 1)),
                         step=0.5,
                         key="final_dev_days"
                     )
@@ -506,7 +534,7 @@ if st.session_state.is_admin:
                 with col5:
                     final_qa_days = st.number_input(
                         "QA Days",
-                        value=1.0,
+                        value=float(round(average_qa, 1)),
                         step=0.5,
                         key="final_qa_days"
                     )
