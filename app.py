@@ -2,6 +2,8 @@ import json
 import os
 import pandas as pd
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
+
 
 st.set_page_config(
     page_title="Agile Planning Poker",
@@ -417,7 +419,12 @@ if st.session_state.is_admin:
 # =========================
 
 else:
-
+    # Keep participant screens synced with admin actions
+    if st.session_state.get("room_code"):
+        st_autorefresh(
+            interval=2000,
+            key=f"sync_{st.session_state.room_code}"
+        )
     col1, col2 = st.columns([3,1])
 
     with col1:
