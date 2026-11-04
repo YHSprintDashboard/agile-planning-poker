@@ -270,11 +270,7 @@ if rooms:
             }
         )
 
-    st.dataframe(
-        pd.DataFrame(room_rows),
-        use_container_width=True,
-        hide_index=True
-    )
+    st.table(pd.DataFrame(room_rows))
 
 else:
     st.info(
