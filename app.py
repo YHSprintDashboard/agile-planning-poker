@@ -173,15 +173,24 @@ if st.session_state.is_admin:
 
     st.subheader("👑 Admin Dashboard")
 
-    room_name = st.text_input(
-        "Room Name",
-        placeholder="Sprint 15 Planning"
-    )
+    col1, col2 = st.columns([4,1])
 
-    if st.button(
-        "➕ Create Room",
-        use_container_width=True
-    ):
+    with col1:
+        room_name = st.text_input(
+            "Room Name",
+            placeholder="Sprint 15 Planning"
+        )
+    
+    with col2:
+        st.write("")
+        st.write("")
+    
+        create_room = st.button(
+            "➕ Create",
+            use_container_width=True
+        )
+    
+    if create_room:
 
         if not room_name.strip():
 
@@ -253,11 +262,58 @@ if st.session_state.is_admin:
         
         if users:
         
-            cols = st.columns(len(users))
+            card_html = ""
         
-            for idx, user in enumerate(users):
+            for user in users:
         
-                with cols[idx]:
+                voted = user in room["votes"]
+        
+                if room["revealed"] and voted:
+        
+                    display_value = room["votes"][user]
+        
+                elif voted:
+        
+                    display_value = "✅"
+        
+                else:
+        
+                    display_value = "⏳"
+        
+                card_html += f"""
+                <div style="
+                    width:120px;
+                    margin:10px;
+                    display:inline-block;
+                    text-align:center;
+                    vertical-align:top;
+                ">
+                    <div style="
+                        height:120px;
+                        border:2px dashed #cccccc;
+                        border-radius:10px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:28px;
+                        font-weight:bold;
+                    ">
+                        {display_value}
+                    </div>
+        
+                    <div style="
+                        margin-top:8px;
+                        font-size:14px;
+                    ">
+                        {user}
+                    </div>
+                </div>
+                """
+        
+            st.markdown(
+                card_html,
+                unsafe_allow_html=True
+            )
         
                     voted = user in room["votes"]
         
@@ -403,15 +459,26 @@ if st.session_state.is_admin:
                     f"**Median SP:** {median_sp}"
                 )
 
-                final_sp = st.number_input(
-                    "Final Story Points",
-                    value=float(
-                        round(
-                            average_sp
-                        )
-                    ),
-                    step=1.0
-                )
+                col1, col2, col3 = st.columns([1,1,4])
+
+                with col1:
+                    st.metric(
+                        "Average",
+                        f"{average_sp:.2f}"
+                    )
+                
+                with col2:
+                    st.metric(
+                        "Median",
+                        median_sp
+                    )
+                
+                with col3:
+                    final_sp = st.number_input(
+                        "Final SP",
+                        value=float(round(average_sp)),
+                        step=1.0
+                    )
 
                 st.success(
                     f"✅ Final SP Selected: {final_sp}"
