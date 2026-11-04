@@ -214,7 +214,7 @@ if st.session_state.is_admin:
     with col1:
         room_name = st.text_input(
             "Room Name",
-            placeholder="Sprint 15 Planning"
+            placeholder="Sprint Planning"
         )
     
     with col2:
@@ -472,56 +472,66 @@ else:
                 f"**🏠 {st.session_state.room_code}**"
             )
 
-    col1, col2, col3 = st.columns([2,1,4])
+    if not st.session_state.room_code:
 
-    with col1:
-        room_code = st.text_input(
-            "Room Code",
-            placeholder="SPRINT15PLANNING"
-        )
+        col1, col2, col3 = st.columns([2,1,4])
     
-    with col2:
-        st.write("")
-        st.write("")
-    
-        join_clicked = st.button(
-            "🚪 Join",
-            use_container_width=True
-        )
-    
-    if join_clicked:
-    
-        room_code = room_code.upper().strip()
-    
-        if not room_code:
-    
-            st.error(
-                "Please enter a room code."
+        with col1:
+            room_code = st.text_input(
+                "Room Code",
+                placeholder="SPRINT15PLANNING"
             )
     
-        elif room_code not in rooms:
+        with col2:
+            st.write("")
+            st.write("")
     
-            st.error(
-                "Room does not exist."
+            join_clicked = st.button(
+                "🚪 Join",
+                use_container_width=True
             )
     
-        else:
+        if join_clicked:
     
-            user_name = st.session_state.display_name
+            room_code = room_code.upper().strip()
     
-            if user_name not in rooms[room_code]["users"]:
+            if not room_code:
     
-                rooms[room_code]["users"].append(
-                    user_name
+                st.error(
+                    "Please enter a room code."
                 )
     
-                save_rooms(rooms)
+            elif room_code not in rooms:
     
-            st.session_state.room_code = room_code
+                st.error(
+                    "Room does not exist."
+                )
     
-            st.success(
-                f"Joined Room: {room_code}"
-            )
+            else:
+    
+                user_name = st.session_state.display_name
+    
+                if user_name not in rooms[room_code]["users"]:
+    
+                    rooms[room_code]["users"].append(
+                        user_name
+                    )
+    
+                    save_rooms(rooms)
+    
+                st.session_state.room_code = room_code
+    
+                st.success(
+                    f"Joined Room: {room_code}"
+                )
+    
+                st.rerun()
+    
+    else:
+    
+        st.success(
+            f"✅ Connected to Room: {st.session_state.room_code}"
+        )
 
 # =========================
 # VOTING SECTION
