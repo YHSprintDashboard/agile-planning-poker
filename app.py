@@ -419,8 +419,7 @@ else:
                     
                     save_rooms(rooms)
 
-        st.markdown("### Fun Cards")
-
+       
         st.markdown("### Fun Cards")
 
         fun_cols = st.columns(5)
