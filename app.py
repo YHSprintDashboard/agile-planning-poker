@@ -70,8 +70,10 @@ if not st.session_state.authenticated:
 
     if role == "👤 Participant":
 
+        st.write("Display Name")
+
         display_name = st.text_input(
-            "Display Name",
+            "",
             placeholder="Enter your name"
         )
 
