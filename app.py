@@ -468,8 +468,8 @@ else:
     
     with col2:
         if st.session_state.room_code:
-            st.info(
-                f"🏠 {st.session_state.room_code}"
+            st.markdown(
+                f"**🏠 {st.session_state.room_code}**"
             )
 
     col1, col2, col3 = st.columns([2,1,4])
