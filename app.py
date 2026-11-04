@@ -421,26 +421,33 @@ else:
 
         st.markdown("### Fun Cards")
 
-        for emoji, description in FUN_CARDS.items():
+        st.markdown("### Fun Cards")
 
-            if st.button(
-                f"{emoji} {description}",
-                key=f"fun_{emoji}",
-                use_container_width=True
-            ):
-                selected_value = f"{emoji} {description}"
-
-                st.session_state.selected_vote = selected_value
-                
-                rooms = load_rooms()
-                
-                rooms[
-                    st.session_state.room_code
-                ]["votes"][
-                    st.session_state.display_name
-                ] = selected_value
-                
-                save_rooms(rooms)
+        fun_cols = st.columns(5)
+        
+        for i, (emoji, description) in enumerate(FUN_CARDS.items()):
+        
+            with fun_cols[i % 5]:
+        
+                if st.button(
+                    f"{emoji}\n{description}",
+                    key=f"fun_{emoji}",
+                    use_container_width=True
+                ):
+        
+                    selected_value = f"{emoji} {description}"
+        
+                    st.session_state.selected_vote = selected_value
+        
+                    rooms = load_rooms()
+        
+                    rooms[
+                        st.session_state.room_code
+                    ]["votes"][
+                        st.session_state.display_name
+                    ] = selected_value
+        
+                    save_rooms(rooms)
 
         if st.session_state.selected_vote:
 
