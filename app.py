@@ -424,10 +424,21 @@ if st.session_state.is_admin:
 
             if revealed_rows:
 
-                st.table(
-                    pd.DataFrame(
-                        revealed_rows
-                    )
+                revealed_df = pd.DataFrame(
+                    revealed_rows
+                )
+                
+                st.dataframe(
+                    revealed_df,
+                    column_config={
+                        "Participant": st.column_config.TextColumn(
+                            width="small"
+                        ),
+                        "Vote": st.column_config.TextColumn(
+                            width="small"
+                        )
+                    },
+                    hide_index=True
                 )
 
             numeric_votes = []
@@ -453,25 +464,17 @@ if st.session_state.is_admin:
                     )[len(numeric_votes)//2]
                 )
 
-                st.markdown(
-                    f"**Average SP:** {average_sp:.2f}"
-                )
-
-                st.markdown(
-                    f"**Median SP:** {median_sp}"
-                )
-
-                col1, col2, col3 = st.columns([1,1,4])
+                col1, col2, col3 = st.columns([1,1,1])
 
                 with col1:
                     st.metric(
-                        "Average",
+                        "Average SP",
                         f"{average_sp:.2f}"
                     )
                 
                 with col2:
                     st.metric(
-                        "Median",
+                        "Median SP",
                         median_sp
                     )
                 
