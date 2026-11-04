@@ -257,6 +257,7 @@ if st.session_state.is_admin:
                 rooms[room_code] = {
                     "name": room_name,
                     "status": "Open",
+                    "current_story": "",
                     "users": [],
                     "votes": {},
                     "revealed": False
@@ -276,7 +277,7 @@ if st.session_state.is_admin:
 
         st.header("👑 Admin Controls")
 
-        col1, col2, col3, col4, col5 = st.columns(5)
+        col1, col2, col3, col4, col5, col6 = st.columns(6)
         
         with col1:
             selected_room = st.selectbox(
@@ -285,27 +286,49 @@ if st.session_state.is_admin:
             )
         
         with col2:
+            current_story = st.text_input(
+                "User Story",
+                value=rooms[selected_room].get(
+                    "current_story",
+                    ""
+                ),
+                placeholder="US-1234"
+            )
+        
+            if st.button(
+                "💾 Set Story",
+                use_container_width=True
+            ):
+                rooms[selected_room][
+                    "current_story"
+                ] = current_story
+        
+                save_rooms(rooms)
+        
+                st.rerun()
+        
+        with col3:
             st.write("")
             reveal_votes = st.button(
                 "🎭 Reveal Votes",
                 use_container_width=True
             )
         
-        with col3:
+        with col4:
             st.write("")
             undo_reveal = st.button(
                 "↩️ Undo Reveal",
                 use_container_width=True
             )
         
-        with col4:
+        with col5:
             st.write("")
             new_story = st.button(
                 "🆕 New User Story",
                 use_container_width=True
             )
         
-        with col5:
+        with col6:
             st.write("")
             refresh_status = st.button(
                 "🔄 Refresh",
@@ -314,6 +337,7 @@ if st.session_state.is_admin:
         
         if refresh_status:
             st.rerun()
+
 
         room = rooms[selected_room]
 
@@ -582,6 +606,12 @@ if st.session_state.room_code:
         st.session_state.room_code,
         {}
     )
+
+    if room.get("current_story"):
+
+        st.success(
+            f"📋 Current User Story: {room['current_story']}"
+        )
 
     voting_locked = room.get(
         "revealed",
