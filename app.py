@@ -253,6 +253,56 @@ if st.session_state.is_admin:
         
         if users:
         
+            cols = st.columns(len(users))
+        
+            for idx, user in enumerate(users):
+        
+                with cols[idx]:
+        
+                    voted = user in room["votes"]
+        
+                    if room["revealed"] and voted:
+        
+                        vote = room["votes"][user]
+        
+                        st.markdown(
+                            f"""
+                            <div style="
+                                border:2px solid #c9b07c;
+                                border-radius:10px;
+                                padding:25px;
+                                text-align:center;
+                                min-height:120px;
+                            ">
+                                <h2>{vote}</h2>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+        
+                    else:
+        
+                        st.markdown(
+                            """
+                            <div style="
+                                border:2px dashed #cccccc;
+                                border-radius:10px;
+                                padding:25px;
+                                text-align:center;
+                                min-height:120px;
+                            ">
+                                ?
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+        
+                    st.caption(user)
+
+        users = room["users"]
+        
+        if users:
+        
             cols = st.columns(
                 min(len(users), 6)
             )
@@ -387,44 +437,53 @@ else:
                 f"🏠 {st.session_state.room_code}"
             )
 
-    room_code = st.text_input(
-        "Room Code",
-        placeholder="SPRINT15PLANNING"
-    )
+    col1, col2 = st.columns([4,1])
 
-    if st.button(
-        "🚪 Join Room",
-        use_container_width=True
-    ):
-
+    with col1:
+        room_code = st.text_input(
+            "Room Code",
+            placeholder="SPRINT15PLANNING"
+        )
+    
+    with col2:
+        st.write("")
+        st.write("")
+    
+        join_clicked = st.button(
+            "🚪 Join",
+            use_container_width=True
+        )
+    
+    if join_clicked:
+    
         room_code = room_code.upper().strip()
-
+    
         if not room_code:
-
+    
             st.error(
                 "Please enter a room code."
             )
-
+    
         elif room_code not in rooms:
-
+    
             st.error(
                 "Room does not exist."
             )
-
+    
         else:
-
+    
             user_name = st.session_state.display_name
-
+    
             if user_name not in rooms[room_code]["users"]:
-
+    
                 rooms[room_code]["users"].append(
                     user_name
                 )
-
+    
                 save_rooms(rooms)
-
+    
             st.session_state.room_code = room_code
-
+    
             st.success(
                 f"Joined Room: {room_code}"
             )
