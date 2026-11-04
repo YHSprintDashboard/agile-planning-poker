@@ -247,7 +247,17 @@ if st.session_state.is_admin:
                 "🎭 Reveal Votes",
                 use_container_width=True
             )
-        
+            
+            undo_reveal = st.button(
+                "↩️ Undo Reveal",
+                use_container_width=True
+            )
+            
+            new_story = st.button(
+                "🆕 New User Story",
+                use_container_width=True
+            )
+            
             if st.button(
                 "🔄 Refresh Status",
                 use_container_width=True
@@ -300,6 +310,24 @@ if st.session_state.is_admin:
 
             save_rooms(rooms)
 
+            st.rerun()
+
+        if undo_reveal:
+
+            room["revealed"] = False
+        
+            save_rooms(rooms)
+        
+            st.rerun()
+
+        if new_story:
+
+            room["votes"] = {}
+        
+            room["revealed"] = False
+        
+            save_rooms(rooms)
+        
             st.rerun()
 
         if room["revealed"]:
