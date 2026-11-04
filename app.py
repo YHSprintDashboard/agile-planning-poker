@@ -253,6 +253,7 @@ st.markdown("### 📋 Active Rooms")
 
 rooms = load_rooms()
 
+
 if rooms:
 
     room_rows = []
