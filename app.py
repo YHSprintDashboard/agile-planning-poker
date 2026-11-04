@@ -184,6 +184,7 @@ if st.session_state.is_admin:
     ):
 
         if not room_name.strip():
+
             st.error(
                 "Please enter a room name."
             )
@@ -207,7 +208,9 @@ if st.session_state.is_admin:
                 rooms[room_code] = {
                     "name": room_name,
                     "status": "Open",
-                    "users": []
+                    "users": [],
+                    "votes": {},
+                    "revealed": False
                 }
 
                 save_rooms(rooms)
@@ -215,6 +218,119 @@ if st.session_state.is_admin:
                 st.success(
                     f"Room Created: {room_code}"
                 )
+
+    rooms = load_rooms()
+
+    if rooms:
+
+        st.divider()
+
+        selected_room = st.selectbox(
+            "Active Room",
+            list(rooms.keys())
+        )
+
+        room = rooms[selected_room]
+
+        st.markdown("### 👥 Voting Status")
+
+        for user in room["users"]:
+
+            if user in room["votes"]:
+
+                st.write(
+                    f"✅ {user} - Voted"
+                )
+
+            else:
+
+                st.write(
+                    f"⏳ {user} - Waiting"
+                )
+
+        st.divider()
+
+        if st.button(
+            "🎭 Reveal Votes",
+            use_container_width=True
+        ):
+
+            room["revealed"] = True
+
+            save_rooms(rooms)
+
+            st.rerun()
+
+        if room["revealed"]:
+
+            st.markdown(
+                "### 🗳 Revealed Votes"
+            )
+
+            revealed_rows = []
+
+            for user, vote in room["votes"].items():
+
+                revealed_rows.append(
+                    {
+                        "Participant": user,
+                        "Vote": vote
+                    }
+                )
+
+            if revealed_rows:
+
+                st.table(
+                    pd.DataFrame(
+                        revealed_rows
+                    )
+                )
+
+            numeric_votes = []
+
+            for vote in room["votes"].values():
+
+                if str(vote).isdigit():
+
+                    numeric_votes.append(
+                        int(vote)
+                    )
+
+            if numeric_votes:
+
+                average_sp = (
+                    sum(numeric_votes)
+                    / len(numeric_votes)
+                )
+
+                median_sp = (
+                    sorted(
+                        numeric_votes
+                    )[len(numeric_votes)//2]
+                )
+
+                st.markdown(
+                    f"**Average SP:** {average_sp:.2f}"
+                )
+
+                st.markdown(
+                    f"**Median SP:** {median_sp}"
+                )
+
+                final_sp = st.number_input(
+                    "Final Story Points",
+                    value=float(
+                        round(
+                            average_sp
+                        )
+                    ),
+                    step=1.0
+                )
+
+                st.success(
+                    f"✅ Final SP Selected: {final_sp}"
+                )
+
 
 # =========================
 # PARTICIPANT
@@ -293,6 +409,16 @@ else:
                 ):
                     st.session_state.selected_vote = point
 
+                    rooms = load_rooms()
+                    
+                    rooms[
+                        st.session_state.room_code
+                    ]["votes"][
+                        st.session_state.display_name
+                    ] = point
+                    
+                    save_rooms(rooms)
+
         st.markdown("### Fun Cards")
 
         for emoji, description in FUN_CARDS.items():
@@ -302,9 +428,19 @@ else:
                 key=f"fun_{emoji}",
                 use_container_width=True
             ):
-                st.session_state.selected_vote = (
-                    f"{emoji} {description}"
-                )
+                selected_value = f"{emoji} {description}"
+
+                st.session_state.selected_vote = selected_value
+                
+                rooms = load_rooms()
+                
+                rooms[
+                    st.session_state.room_code
+                ]["votes"][
+                    st.session_state.display_name
+                ] = selected_value
+                
+                save_rooms(rooms)
 
         if st.session_state.selected_vote:
 
