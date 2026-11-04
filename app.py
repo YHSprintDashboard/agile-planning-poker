@@ -36,6 +36,24 @@ def save_rooms(rooms):
     with open(ROOMS_FILE, "w") as f:
         json.dump(rooms, f, indent=4)
 
+
+STORY_POINTS = [
+    "1", "2", "3", "5", "8", "13", "21"
+]
+
+FUN_CARDS = {
+    "☕": "Need a break",
+    "🍺": "End of refinement",
+    "👻": "No idea / needs more detail",
+    "🧙": "Hidden complexity",
+    "🧔": "I've seen this before",
+    "🚀": "Easy win",
+    "🔥": "High risk",
+    "🤯": "Massive effort",
+    "🐙": "Too many dependencies",
+    "🦄": "Sounds great, probably isn't"
+}
+
 # =========================
 # SESSION STATE
 # =========================
@@ -51,6 +69,9 @@ if "display_name" not in st.session_state:
 
 if "room_code" not in st.session_state:
     st.session_state.room_code = ""
+
+if "selected_vote" not in st.session_state:
+    st.session_state.selected_vote = None
 
 # =========================
 # LOGIN SCREEN
@@ -232,6 +253,7 @@ else:
             user_name = st.session_state.display_name
 
             if user_name not in rooms[room_code]["users"]:
+
                 rooms[room_code]["users"].append(
                     user_name
                 )
@@ -242,6 +264,53 @@ else:
 
             st.success(
                 f"Joined Room: {room_code}"
+            )
+
+    # =========================
+    # VOTING SECTION
+    # =========================
+
+    if st.session_state.room_code:
+
+        st.divider()
+
+        st.subheader(
+            f"🗳 Voting Room: {st.session_state.room_code}"
+        )
+
+        st.markdown("### Story Points")
+
+        cols = st.columns(7)
+
+        for i, point in enumerate(STORY_POINTS):
+
+            with cols[i]:
+
+                if st.button(
+                    point,
+                    key=f"sp_{point}",
+                    use_container_width=True
+                ):
+                    st.session_state.selected_vote = point
+
+        st.markdown("### Fun Cards")
+
+        for emoji, description in FUN_CARDS.items():
+
+            if st.button(
+                f"{emoji} {description}",
+                key=f"fun_{emoji}",
+                use_container_width=True
+            ):
+                st.session_state.selected_vote = (
+                    f"{emoji} {description}"
+                )
+
+        if st.session_state.selected_vote:
+
+            st.success(
+                f"✅ Your Vote: "
+                f"{st.session_state.selected_vote}"
             )
 
 # =========================
