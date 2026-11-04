@@ -482,7 +482,7 @@ else:
                 f"Joined Room: {room_code}"
             )
 
-    # =========================
+# =========================
 # VOTING SECTION
 # =========================
 
@@ -551,7 +551,7 @@ if st.session_state.room_code:
 
             if st.button(
                 f"{emoji}\n{description}",
-                key=f"fun_{emoji}",
+                key=f"fun_{emoji}_{i}",
                 use_container_width=True,
                 disabled=voting_locked
             ):
@@ -580,42 +580,6 @@ if st.session_state.room_code:
             "Your Vote",
             st.session_state.selected_vote
         )
-
-       
-        st.markdown("### Fun Cards")
-
-        fun_cols = st.columns(5)
-        
-        for i, (emoji, description) in enumerate(FUN_CARDS.items()):
-        
-            with fun_cols[i % 5]:
-        
-                if st.button(
-                    f"{emoji}\n{description}",
-                    key=f"fun_{emoji}",
-                    use_container_width=True
-                ):
-        
-                    selected_value = f"{emoji} {description}"
-        
-                    st.session_state.selected_vote = selected_value
-        
-                    rooms = load_rooms()
-        
-                    rooms[
-                        st.session_state.room_code
-                    ]["votes"][
-                        st.session_state.display_name
-                    ] = selected_value
-        
-                    save_rooms(rooms)
-
-        if st.session_state.selected_vote:
-
-            st.metric(
-                "Your Vote",
-                st.session_state.selected_vote
-            )
 
 # =========================
 # ACTIVE ROOMS
