@@ -468,8 +468,24 @@ else:
     
     with col2:
         if st.session_state.room_code:
-            st.markdown(
-                f"**🏠 {st.session_state.room_code}**"
+    
+            rooms = load_rooms()
+    
+            current_room = rooms.get(
+                st.session_state.room_code,
+                {}
+            )
+    
+            participant_count = len(
+                current_room.get("users", [])
+            )
+    
+            st.info(
+                f"🏠 {st.session_state.room_code}"
+            )
+    
+            st.caption(
+                f"👥 {participant_count} participant(s)"
             )
 
     if not st.session_state.room_code:
