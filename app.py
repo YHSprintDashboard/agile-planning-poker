@@ -282,31 +282,35 @@ if st.session_state.is_admin:
         
                 card_html += f"""
                 <div style="
-                    width:120px;
+                    width:80px;
                     margin:10px;
                     display:inline-block;
                     text-align:center;
                     vertical-align:top;
                 ">
+                
                     <div style="
-                        height:120px;
+                        width:80px;
+                        height:110px;
                         border:2px dashed #cccccc;
                         border-radius:10px;
                         display:flex;
                         align-items:center;
                         justify-content:center;
-                        font-size:28px;
+                        font-size:22px;
                         font-weight:bold;
+                        background-color:white;
                     ">
                         {display_value}
                     </div>
-        
+                
                     <div style="
                         margin-top:8px;
                         font-size:14px;
                     ">
                         {user}
                     </div>
+                
                 </div>
                 """
         
