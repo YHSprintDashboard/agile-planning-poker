@@ -225,35 +225,71 @@ if st.session_state.is_admin:
 
         st.divider()
 
-        selected_room = st.selectbox(
-            "Active Room",
-            list(rooms.keys())
-        )
+        with st.sidebar:
+
+            st.header("👑 Admin Controls")
+        
+            selected_room = st.selectbox(
+                "Active Room",
+                list(rooms.keys())
+            )
+        
+            reveal_votes = st.button(
+                "🎭 Reveal Votes",
+                use_container_width=True
+            )
+        
+            if st.button(
+                "🔄 Refresh Status",
+                use_container_width=True
+            ):
+                st.rerun()
 
         room = rooms[selected_room]
 
-        st.markdown("### 👥 Voting Status")
+        st.markdown("### 👥 Team Voting Board")
 
-        for user in room["users"]:
-
-            if user in room["votes"]:
-
-                st.write(
-                    f"✅ {user} - Voted"
-                )
-
-            else:
-
-                st.write(
-                    f"⏳ {user} - Waiting"
-                )
+        users = room["users"]
+        
+        if users:
+        
+            cols = st.columns(
+                min(len(users), 6)
+            )
+        
+            for idx, user in enumerate(users):
+        
+                with cols[idx % 6]:
+        
+                    voted = user in room["votes"]
+        
+                    if room["revealed"] and voted:
+        
+                        vote = room["votes"][user]
+        
+                        st.markdown(
+                            f"""
+                            ### {vote}
+        
+                            **{user}**
+                            """
+                        )
+        
+                    else:
+        
+                        if voted:
+        
+                            st.success("✅")
+        
+                        else:
+        
+                            st.warning("⏳")
+        
+                        st.caption(user)
 
         st.divider()
 
-        if st.button(
-            "🎭 Reveal Votes",
-            use_container_width=True
-        ):
+        if reveal_votes:
 
             room["revealed"] = True
 
@@ -338,7 +374,18 @@ if st.session_state.is_admin:
 
 else:
 
-    st.subheader("👤 Participant")
+    col1, col2 = st.columns([3,1])
+
+    with col1:
+        st.subheader(
+            f"👤 {st.session_state.display_name}"
+        )
+    
+    with col2:
+        if st.session_state.room_code:
+            st.info(
+                f"🏠 {st.session_state.room_code}"
+            )
 
     room_code = st.text_input(
         "Room Code",
@@ -450,41 +497,45 @@ else:
 
         if st.session_state.selected_vote:
 
-            st.success(
-                f"✅ Your Vote: "
-                f"{st.session_state.selected_vote}"
+            st.metric(
+                "Your Vote",
+                st.session_state.selected_vote
             )
 
 # =========================
 # ACTIVE ROOMS
 # =========================
 
-st.divider()
-st.markdown("### 📋 Active Rooms")
+with st.expander(
+    "📋 Active Rooms",
+    expanded=False
+):
 
-rooms = load_rooms()
+    rooms = load_rooms()
 
+    if rooms:
 
-if rooms:
+        room_rows = []
 
-    room_rows = []
+        for code, room in rooms.items():
 
-    for code, room in rooms.items():
+            room_rows.append(
+                {
+                    "Room Code": code,
+                    "Room Name": room["name"],
+                    "Status": room["status"],
+                    "Participants": len(
+                        room["users"]
+                    )
+                }
+            )
 
-        room_rows.append(
-            {
-                "Room Code": code,
-                "Room Name": room["name"],
-                "Status": room["status"],
-                "Participants": len(
-                    room["users"]
-                )
-            }
+        st.table(
+            pd.DataFrame(room_rows)
         )
 
-    st.table(pd.DataFrame(room_rows))
+    else:
 
-else:
-    st.info(
-        "No rooms created yet."
-    )
+        st.info(
+            "No rooms created yet."
+        )
