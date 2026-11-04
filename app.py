@@ -76,6 +76,9 @@ def save_rooms(rooms):
 STORY_POINTS = [
     "1", "2", "3", "5", "8", "13", "21"
 ]
+DAY_ESTIMATES = [
+    "0.5", "1", "2", "3", "4", "5", "6+"
+]
 
 FUN_CARDS = {
     "☕": "Need a break",
@@ -108,6 +111,12 @@ if "room_code" not in st.session_state:
 
 if "selected_vote" not in st.session_state:
     st.session_state.selected_vote = None
+
+if "selected_dev_vote" not in st.session_state:
+    st.session_state.selected_dev_vote = None
+
+if "selected_qa_vote" not in st.session_state:
+    st.session_state.selected_qa_vote = None
 
 # =========================
 # LOGIN SCREEN
@@ -260,7 +269,9 @@ if st.session_state.is_admin:
                     "current_story": "",
                     "history": [],
                     "users": [],
-                    "votes": {},
+                    "sp_votes": {},
+                    "dev_votes": {},
+                    "qa_votes": {},
                     "revealed": False
                 }
 
@@ -354,13 +365,13 @@ if st.session_state.is_admin:
         
                 with cols[idx % 8]:
         
-                    voted = user in room["votes"]
-        
+                    voted = user in room["sp_votes"]
+
                     if room["revealed"] and voted:
-        
+                    
                         st.metric(
                             label=user,
-                            value=room["votes"][user]
+                            value=room["sp_votes"][user]
                         )
         
                     elif voted:
@@ -398,7 +409,9 @@ if st.session_state.is_admin:
 
         if new_story:
 
-            room["votes"] = {}
+            room["sp_votes"] = {}
+            room["dev_votes"] = {}
+            room["qa_votes"] = {}
         
             room["revealed"] = False
         
@@ -414,12 +427,14 @@ if st.session_state.is_admin:
 
             revealed_rows = []
 
-            for user, vote in room["votes"].items():
+            for user in room["users"]:
 
                 revealed_rows.append(
                     {
                         "Participant": user,
-                        "Vote": vote
+                        "SP": room["sp_votes"].get(user, ""),
+                        "Dev Days": room["dev_votes"].get(user, ""),
+                        "QA Days": room["qa_votes"].get(user, "")
                     }
                 )
 
@@ -437,7 +452,7 @@ if st.session_state.is_admin:
 
             numeric_votes = []
 
-            for vote in room["votes"].values():
+            for vote in room["sp_votes"].values():
 
                 if str(vote).isdigit():
 
@@ -659,12 +674,66 @@ if st.session_state.room_code:
 
                 rooms[
                     st.session_state.room_code
-                ]["votes"][
+                ]["sp_votes"][
                     st.session_state.display_name
                 ] = point
 
                 save_rooms(rooms)
 
+    st.markdown("### 💻 Dev Completion (Days)")
+
+    dev_cols = st.columns(7)
+    
+    for i, day in enumerate(DAY_ESTIMATES):
+    
+        with dev_cols[i]:
+    
+            if st.button(
+                day,
+                key=f"dev_{day}",
+                use_container_width=True,
+                disabled=voting_locked
+            ):
+    
+                st.session_state.selected_dev_vote = day
+    
+                rooms = load_rooms()
+    
+                rooms[
+                    st.session_state.room_code
+                ]["dev_votes"][
+                    st.session_state.display_name
+                ] = day
+    
+                save_rooms(rooms)
+
+    st.markdown("### 🧪 Testing Completion (Days)")
+
+    qa_cols = st.columns(7)
+    
+    for i, day in enumerate(DAY_ESTIMATES):
+    
+        with qa_cols[i]:
+    
+            if st.button(
+                day,
+                key=f"qa_{day}",
+                use_container_width=True,
+                disabled=voting_locked
+            ):
+    
+                st.session_state.selected_qa_vote = day
+    
+                rooms = load_rooms()
+    
+                rooms[
+                    st.session_state.room_code
+                ]["qa_votes"][
+                    st.session_state.display_name
+                ] = day
+    
+                save_rooms(rooms)
+                
     st.markdown("### Fun Cards")
 
     fun_cols = st.columns(5)
@@ -694,18 +763,34 @@ if st.session_state.room_code:
 
                 rooms[
                     st.session_state.room_code
-                ]["votes"][
+                ]["sp_votes"][
                     st.session_state.display_name
                 ] = selected_value
 
                 save_rooms(rooms)
 
-    if st.session_state.selected_vote:
+    col1, col2, col3 = st.columns(3)
 
-        st.metric(
-            "Your Vote",
-            st.session_state.selected_vote
-        )
+    with col1:
+        if st.session_state.selected_vote:
+            st.metric(
+                "Story Points",
+                st.session_state.selected_vote
+            )
+    
+    with col2:
+        if st.session_state.selected_dev_vote:
+            st.metric(
+                "Dev Days",
+                st.session_state.selected_dev_vote
+            )
+    
+    with col3:
+        if st.session_state.selected_qa_vote:
+            st.metric(
+                "QA Days",
+                st.session_state.selected_qa_vote
+            )
 
 # =========================
 # ACTIVE ROOMS
