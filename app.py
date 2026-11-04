@@ -455,41 +455,103 @@ else:
             )
 
     # =========================
-    # VOTING SECTION
-    # =========================
+# VOTING SECTION
+# =========================
 
-    if st.session_state.room_code:
+if st.session_state.room_code:
 
-        st.divider()
+    st.divider()
 
-        st.subheader(
-            f"🗳 Voting Room: {st.session_state.room_code}"
+    st.subheader(
+        f"🗳 Voting Room: {st.session_state.room_code}"
+    )
+
+    rooms = load_rooms()
+
+    room = rooms.get(
+        st.session_state.room_code,
+        {}
+    )
+
+    voting_locked = room.get(
+        "revealed",
+        False
+    )
+
+    if voting_locked:
+
+        st.warning(
+            "🔒 Voting is locked. Admin has revealed votes."
         )
 
-        st.markdown("### Story Points")
+    st.markdown("### Story Points")
 
-        cols = st.columns(7)
+    cols = st.columns(7)
 
-        for i, point in enumerate(STORY_POINTS):
+    for i, point in enumerate(STORY_POINTS):
 
-            with cols[i]:
+        with cols[i]:
 
-                if st.button(
-                    point,
-                    key=f"sp_{point}",
-                    use_container_width=True
-                ):
-                    st.session_state.selected_vote = point
+            if st.button(
+                point,
+                key=f"sp_{point}",
+                use_container_width=True,
+                disabled=voting_locked
+            ):
 
-                    rooms = load_rooms()
-                    
-                    rooms[
-                        st.session_state.room_code
-                    ]["votes"][
-                        st.session_state.display_name
-                    ] = point
-                    
-                    save_rooms(rooms)
+                st.session_state.selected_vote = point
+
+                rooms = load_rooms()
+
+                rooms[
+                    st.session_state.room_code
+                ]["votes"][
+                    st.session_state.display_name
+                ] = point
+
+                save_rooms(rooms)
+
+    st.markdown("### Fun Cards")
+
+    fun_cols = st.columns(5)
+
+    for i, (emoji, description) in enumerate(
+        FUN_CARDS.items()
+    ):
+
+        with fun_cols[i % 5]:
+
+            if st.button(
+                f"{emoji}\n{description}",
+                key=f"fun_{emoji}",
+                use_container_width=True,
+                disabled=voting_locked
+            ):
+
+                selected_value = (
+                    f"{emoji} {description}"
+                )
+
+                st.session_state.selected_vote = (
+                    selected_value
+                )
+
+                rooms = load_rooms()
+
+                rooms[
+                    st.session_state.room_code
+                ]["votes"][
+                    st.session_state.display_name
+                ] = selected_value
+
+                save_rooms(rooms)
+
+    if st.session_state.selected_vote:
+
+        st.metric(
+            "Your Vote",
+            st.session_state.selected_vote
+        )
 
        
         st.markdown("### Fun Cards")
