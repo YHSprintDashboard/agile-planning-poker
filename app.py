@@ -4,11 +4,45 @@ import pandas as pd
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
-
 st.set_page_config(
     page_title="Agile Planning Poker",
-    layout="wide"
+    page_icon="🎯",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
+
+# Hide Streamlit default UI where possible
+st.markdown("""
+<style>
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}
+
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+[data-testid="stDecoration"] {
+    display: none;
+}
+
+[data-testid="stStatusWidget"] {
+    display: none;
+}
+
+[data-testid="stDeployButton"] {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # =========================
 # FILE SETUP
