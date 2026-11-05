@@ -570,7 +570,8 @@ if st.session_state.is_admin:
                     )
                 
                 with col3:
-                    final_sp = st.number_input(
+
+                    st.session_state.final_sp = st.number_input(
                         "Final SP",
                         value=float(round(average_sp)),
                         step=1.0,
@@ -578,7 +579,8 @@ if st.session_state.is_admin:
                     )
                 
                 with col4:
-                    final_dev_days = st.number_input(
+
+                    st.session_state.final_dev_days = st.number_input(
                         "Dev Days",
                         value=float(round(average_dev, 1)),
                         step=0.5,
@@ -586,7 +588,8 @@ if st.session_state.is_admin:
                     )
                 
                 with col5:
-                    final_qa_days = st.number_input(
+
+                    st.session_state.final_qa_days = st.number_input(
                         "QA Days",
                         value=float(round(average_qa, 1)),
                         step=0.5,
@@ -594,30 +597,30 @@ if st.session_state.is_admin:
                     )
 
                 st.success(
-                    f"✅ Final SP Selected: {final_sp}"
+                    f"✅ Final SP Selected: {st.session_state.final_sp}"
                 )
-                st.divider()
-        
-                st.markdown(
-                    "### 📋 Refinement History"
-                )
-        
-                history = room.get(
-                    "history",
-                    []
-                )
-        
-                if history:
-        
-                    st.table(
-                        pd.DataFrame(history)
-                    )
-        
-                else:
-        
-                    st.info(
-                        "No completed user stories yet."
-                    )
+    st.divider()
+
+    st.markdown(
+        "### 📋 Refinement History"
+    )
+
+    history = room.get(
+        "history",
+        []
+    )
+
+    if history:
+
+        st.table(
+            pd.DataFrame(history)
+        )
+
+    else:
+
+        st.info(
+            "No completed user stories yet."
+        )            
 
 
 
