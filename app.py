@@ -356,6 +356,28 @@ if st.session_state.is_admin:
 
 
         room = rooms[selected_room]
+                st.markdown(
+                    "### 📋 Refinement History"
+                )
+        
+                history = room.get(
+                    "history",
+                    []
+                )
+        
+                if history:
+        
+                    st.table(
+                        pd.DataFrame(history)
+                    )
+        
+                else:
+        
+                    st.info(
+                        "No completed user stories yet."
+                    )
+        
+                st.divider()
 
         st.markdown("### 👥 Team Voting Board")
 
@@ -598,29 +620,7 @@ if st.session_state.is_admin:
 
                 st.success(
                     f"✅ Final SP Selected: {st.session_state.final_sp}"
-                )
-    st.divider()
-
-    st.markdown(
-        "### 📋 Refinement History"
-    )
-
-    history = room.get(
-        "history",
-        []
-    )
-
-    if history:
-
-        st.table(
-            pd.DataFrame(history)
-        )
-
-    else:
-
-        st.info(
-            "No completed user stories yet."
-        )            
+                )          
 
 
 
