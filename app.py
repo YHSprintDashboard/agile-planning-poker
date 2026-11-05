@@ -356,9 +356,12 @@ if st.session_state.is_admin:
 
 
         room = rooms[selected_room]
-        st.markdown(
-            "### 📋 Refinement History"
-        )
+        col1, col2 = st.columns([2,5])
+
+        with col1:
+            st.markdown(
+                "### 📋 Refinement History"
+            )
 
         history = room.get(
             "history",
@@ -367,8 +370,13 @@ if st.session_state.is_admin:
 
         if history:
 
-            st.table(
-                pd.DataFrame(history)
+            history_df = pd.DataFrame(history)
+
+            st.dataframe(
+                history_df,
+                hide_index=True,
+                use_container_width=False,
+                width=700
             )
 
         else:
@@ -466,17 +474,25 @@ if st.session_state.is_admin:
                     "current_story",
                     ""
                 ),
-                "SP": st.session_state.get(
-                    "final_sp",
-                    ""
+                "SP": int(
+                    st.session_state.get(
+                        "final_sp",
+                        0
+                    )
                 ),
-                "Dev Days": st.session_state.get(
-                    "final_dev_days",
-                    ""
+                "Dev Days": round(
+                    st.session_state.get(
+                        "final_dev_days",
+                        0
+                    ),
+                    1
                 ),
-                "QA Days": st.session_state.get(
-                    "final_qa_days",
-                    ""
+                "QA Days": round(
+                    st.session_state.get(
+                        "final_qa_days",
+                        0
+                    ),
+                    1
                 )
             }
         
