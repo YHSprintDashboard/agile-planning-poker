@@ -90,7 +90,10 @@ FUN_CARDS = {
     "🔥": "High risk",
     "🤯": "Massive effort",
     "🐙": "Too many dependencies",
-    "🦄": "Sounds great, probably isn't"
+    "🦄": "Sounds great, probably isn't",
+    "🏃": "BRB",
+    "🙉": "I wasn't listening",
+    "🛡️": "This is the way"
 }
 
 # =========================
@@ -272,6 +275,7 @@ if st.session_state.is_admin:
                     "sp_votes": {},
                     "dev_votes": {},
                     "qa_votes": {},
+                    "fun_cards": {},
                     "revealed": False
                 }
 
@@ -387,7 +391,33 @@ if st.session_state.is_admin:
                             label=user,
                             value="⏳"
                         )
-        
+        st.markdown("### 🎭 Discussion Signals")
+
+        fun_card_rows = []
+
+        for user, signal in room.get(
+            "fun_cards",
+            {}
+        ).items():
+
+            fun_card_rows.append(
+                {
+                    "Participant": user,
+                    "Signal": signal
+                }
+            )
+
+        if fun_card_rows:
+
+            st.table(
+                pd.DataFrame(fun_card_rows)
+            )
+
+        else:
+
+            st.info(
+                "No discussion signals raised."
+            )        
 
         st.divider()
 
@@ -409,9 +439,33 @@ if st.session_state.is_admin:
 
         if new_story:
 
+            history_row = {
+                "US Number": room.get(
+                    "current_story",
+                    ""
+                ),
+                "SP": st.session_state.get(
+                    "final_sp",
+                    ""
+                ),
+                "Dev Days": st.session_state.get(
+                    "final_dev_days",
+                    ""
+                ),
+                "QA Days": st.session_state.get(
+                    "final_qa_days",
+                    ""
+                )
+            }
+        
+            room["history"].append(
+                history_row
+            )
+        
             room["sp_votes"] = {}
             room["dev_votes"] = {}
             room["qa_votes"] = {}
+            room["fun_cards"] = {}
         
             room["revealed"] = False
         
@@ -542,6 +596,29 @@ if st.session_state.is_admin:
                 st.success(
                     f"✅ Final SP Selected: {final_sp}"
                 )
+                st.divider()
+        
+                st.markdown(
+                    "### 📋 Refinement History"
+                )
+        
+                history = room.get(
+                    "history",
+                    []
+                )
+        
+                if history:
+        
+                    st.table(
+                        pd.DataFrame(history)
+                    )
+        
+                else:
+        
+                    st.info(
+                        "No completed user stories yet."
+                    )
+
 
 
 # =========================
@@ -791,7 +868,7 @@ if st.session_state.room_code:
 
                 rooms[
                     st.session_state.room_code
-                ]["sp_votes"][
+                ]["fun_cards"][
                     st.session_state.display_name
                 ] = selected_value
 
