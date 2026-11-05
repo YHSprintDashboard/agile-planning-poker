@@ -439,8 +439,15 @@ if st.session_state.is_admin:
 
         if fun_card_rows:
 
-            st.table(
-                pd.DataFrame(fun_card_rows)
+            signal_df = pd.DataFrame(
+                fun_card_rows
+            )
+            
+            st.dataframe(
+                signal_df,
+                hide_index=True,
+                use_container_width=False,
+                width=600
             )
 
         else:
@@ -480,19 +487,26 @@ if st.session_state.is_admin:
                         0
                     )
                 ),
-                "Dev Days": round(
+                "Dev Days": int(
                     st.session_state.get(
                         "final_dev_days",
                         0
-                    ),
-                    1
+                    )
                 ),
-                "QA Days": round(
+                "QA Days": int(
                     st.session_state.get(
                         "final_qa_days",
                         0
-                    ),
-                    1
+                    )
+                ),
+                "Scrum Drama": " | ".join(
+                    [
+                        f"{user}: {signal}"
+                        for user, signal in room.get(
+                            "fun_cards",
+                            {}
+                        ).items()
+                    ]
                 )
             }
         
