@@ -814,11 +814,20 @@ if st.session_state.room_code:
     dev_cols = st.columns(7)
     
     for i, day in enumerate(DAY_ESTIMATES):
-    
+
         with dev_cols[i]:
     
+            button_label = day
+    
+            if (
+                st.session_state.get(
+                    "selected_dev_vote"
+                ) == day
+            ):
+                button_label = f"✅ {day}"
+    
             if st.button(
-                day,
+                button_label,
                 key=f"dev_{day}",
                 use_container_width=True,
                 disabled=voting_locked
@@ -841,11 +850,20 @@ if st.session_state.room_code:
     qa_cols = st.columns(7)
     
     for i, day in enumerate(DAY_ESTIMATES):
-    
+
         with qa_cols[i]:
     
+            button_label = day
+    
+            if (
+                st.session_state.get(
+                    "selected_qa_vote"
+                ) == day
+            ):
+                button_label = f"✅ {day}"
+    
             if st.button(
-                day,
+                button_label,
                 key=f"qa_{day}",
                 use_container_width=True,
                 disabled=voting_locked
