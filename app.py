@@ -785,8 +785,13 @@ if st.session_state.room_code:
 
         with cols[i]:
 
+            button_label = point
+
+            if st.session_state.selected_vote == point:
+                button_label = f"✅ {point}"
+            
             if st.button(
-                point,
+                button_label,
                 key=f"sp_{point}",
                 use_container_width=True,
                 disabled=voting_locked
@@ -868,8 +873,15 @@ if st.session_state.room_code:
 
         with fun_cols[i % 5]:
 
+            button_label = f"{emoji}\n{description}"
+
+            selected_fun = f"{emoji} {description}"
+            
+            if st.session_state.selected_vote == selected_fun:
+                button_label = f"✅ {emoji}\n{description}"
+            
             if st.button(
-                f"{emoji}\n{description}",
+                button_label,
                 key=f"fun_{emoji}_{i}",
                 use_container_width=True,
                 disabled=voting_locked
