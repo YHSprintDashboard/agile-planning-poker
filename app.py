@@ -593,7 +593,7 @@ if st.session_state.is_admin:
                 
                 with col3:
 
-                    st.session_state.final_sp = st.number_input(
+                    st.number_input(
                         "Final SP",
                         value=float(round(average_sp)),
                         step=1.0,
@@ -602,7 +602,7 @@ if st.session_state.is_admin:
                 
                 with col4:
 
-                    st.session_state.final_dev_days = st.number_input(
+                    st.number_input(
                         "Dev Days",
                         value=float(round(average_dev, 1)),
                         step=0.5,
@@ -611,7 +611,7 @@ if st.session_state.is_admin:
                 
                 with col5:
 
-                    st.session_state.final_qa_days = st.number_input(
+                    st.number_input(
                         "QA Days",
                         value=float(round(average_qa, 1)),
                         step=0.5,
