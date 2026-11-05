@@ -421,7 +421,7 @@ if st.session_state.is_admin:
                             label=user,
                             value="⏳"
                         )
-        st.markdown("### 🎭 Discussion Signals")
+        st.markdown("### 🎭 Scrum Drama")
 
         fun_card_rows = []
 
