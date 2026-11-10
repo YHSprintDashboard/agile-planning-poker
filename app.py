@@ -91,7 +91,7 @@ FUN_CARDS = {
     "🤯": "Massive effort",
     "🐙": "Too many dependencies",
     "🦄": "Sounds great, probably isn't",
-    "1️⃣3️⃣": "Always 13 - David",
+    "1️⃣3️⃣": "Da - Always 13",
     "🙉": "I wasn't listening",
     "🛡️": "This is the way"
 }
